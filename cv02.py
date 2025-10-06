@@ -8,7 +8,7 @@ class LP():
         self._duration = duration
 
     def to_string(self):
-        out = "| {0:^20} | {1:4} | {2:^20} | {3:3} |".format(self._name, self._year, self._artist, self._duration)
+        out = "| {0:^20} | {1:4} | {2:^20} | {3:^8} |".format(self._name, self._year, self._artist, self._duration)
         return out
     
 class Library():
@@ -21,20 +21,26 @@ class Library():
     def delete_LP(self, lp):
         self._library.remove(lp)
 
+    def delete_LP_index(self, index):
+        self._library.pop(index)
+    
     def clean_library(self):
         self._library.clear()
 
     def seed_library(self):
-        self.insert_LP(LP("Paradise City", 1987, "Guns & Roses", 100))
-        self.insert_LP(LP("Swimming", 2018, "Mac Miller", 120))
-        self.insert_LP(LP("Banditi de Prague", 2010, "Kabat", 90))
+        self.insert_LP(LP( "Paradise City", 1987, "Guns & Roses", 100))
+        self.insert_LP(LP( "Swimming", 2018, "Mac Miller", 120))
+        self.insert_LP(LP( "Banditi de Prague", 2010, "Kabat", 90))
     
     def to_string(self):
-        out =  "|----------------------------------|\n"
-        out += "| Title | Year | Artist | Duration |\n"
-        out += "|----------------------------------|\n"
+        out =  "|{}|\n".format("-"*68)
+        out += "| ID | {:^20} | Year | {:^20} | Duration |\n".format("Title", "Artists")
+        out += "|{}|\n".format("-"*68)
+        i = 0
         for lp in self._library:
-            out += lp.to_string() + "\n"
+            out += "|{:2} {}\n".format(i, lp.to_string())
+            i += 1
+        out += "|{}|\n".format("-"*68)
         return out
     
 
@@ -63,7 +69,15 @@ def main():
             library.insert_LP(lp)
             continue
         elif choice[0] == "2":
-            # TODO: 
+            print(library.to_string())
+            index = input("Enter index of LP to delete: ")
+            try:
+                index = int(index)
+                library.delete_LP_index(index)
+            except ValueError:
+                print("ERROR: Selected value is not an index")
+            except IndexError:
+                print("ERROR: Selected index does not exist. ")
             continue
         elif choice[0] == "3":
             library.clean_library()
